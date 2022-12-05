@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <chrono>
 
 #include <camel-euclid/Vector.hpp>
 
@@ -66,11 +67,20 @@ int main()
 {
     try
     {
-        TestWikipedia();
-        std::cout << '\n';
-        TestRandom(1000);
-        std::cout << '\n';
+//        TestWikipedia();
+//        std::cout << '\n';
+//        TestRandom(1000);
+//        std::cout << '\n';
+
+        const auto startTime = std::chrono::high_resolution_clock::now();
+
         TestRandom(1000000);
+
+        const auto stopTime = std::chrono::high_resolution_clock::now();
+        const auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime);
+
+        std::cout << '\n';
+        std::cout << "process runtime : " << elapsedTime.count() / 1000.0f << " ms. | " << elapsedTime.count() << " us. | " << 1000000 / elapsedTime.count() << " Hz." << std::endl;
     }
     catch (const std::exception& e)
     {

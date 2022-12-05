@@ -190,8 +190,10 @@ private:
             return;
         }
 
-        double dx = root->get(index) - point.get(index);
-        index = (index + 1) % dimensions;
+        double dx = root->get(index) - point.get(index);    // difference between current coordinate
+        index = (index + 1) % dimensions;                   // next coordinate
+
+        // search left first.
         nearestRecursive(dx > 0 ? root->mLeft : root->mRight, point, index);
 
         if (dx * dx >= mBestDist)
