@@ -16,10 +16,16 @@ void TestWikipedia()
     typedef Point<int, 2> point2d;
     typedef KDTree<int, 2> tree2d;
 
-    point2d points[] = {{ 2, 3 }, { 5, 4 }, { 9, 6 }, { 4, 7 }, { 8, 1 }, { 7, 2 }};
+//    point2d points[] = {{ 2, 3 }, { 5, 4 }, { 9, 6 }, { 4, 7 }, { 8, 1 }, { 7, 2 }};
+//    point2d points[] = {{ 8, 7 }, { 10, 2 }, { 2, 6 }, { 5, 4 }, { 13, 3 }, { 3, 1 }};
+    point2d points[] = {{ 3, 1 }, { 13, 3 }, { 2, 6 }, { 10, 2 }, { 8, 7 }};
 
+//    std::cout << sizeof(point2d) << std::endl;
+//    std::cout << "check : " << std::begin(points) << ", " << std::end(points) << ", " << (std::begin(points)+1) << std::endl;
+//    std::cout << "check : " << *std::begin(points) << ", " << *std::end(points) << ", " << *(std::begin(points)+1) << ", " << *(std::end(points)-1) << std::endl;
     tree2d tree(std::begin(points), std::end(points));
-    point2d n = tree.Nearest({ 9, 2 });
+//    point2d n = tree.Nearest({ 9, 2 });
+    point2d n = tree.Nearest({ 9, 4 });
 
     std::cout << "Wikipedia example data:\n";
     std::cout << "Nearest Point: " << n << '\n';
@@ -67,14 +73,14 @@ int main()
 {
     try
     {
-//        TestWikipedia();
+        const auto startTime = std::chrono::high_resolution_clock::now();
+        TestWikipedia();
 //        std::cout << '\n';
 //        TestRandom(1000);
 //        std::cout << '\n';
 
-        const auto startTime = std::chrono::high_resolution_clock::now();
 
-        TestRandom(1000000);
+//        TestRandom(1000000);
 
         const auto stopTime = std::chrono::high_resolution_clock::now();
         const auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime);

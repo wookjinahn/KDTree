@@ -32,7 +32,12 @@ public:
     KDTree(iterator begin, iterator end)
         : mNodes(begin, end)
     {
+        std::cout << "start : 0, " << mNodes.size() << ", " << 0 << std::endl;
         mRootNode = makeTreeRecursive(0, mNodes.size(), 0);
+
+        std::cout << "mRootNode : " << mRootNode->get(0) << ", " << mRootNode->get(1) << std::endl;
+        std::cout << "mRootNode Left : " << mRootNode->mLeft->get(0) << ", " << mRootNode->mLeft->get(1) << std::endl;
+        std::cout << "mRootNode Right : " << mRootNode->mRight->get(0) << ", " << mRootNode->mRight->get(1) << std::endl;
     }
 
     /**
@@ -138,7 +143,7 @@ private:
 
         bool operator()(const Node& n1, const Node& n2) const
         {
-            return n1.mPoint.get(mIndex) < n2.mPoint.get(mIndex);
+            return n1.mPoint.get(mIndex) < n2.mPoint.get(mIndex);   // 오름차순
         }
 
         size_t mIndex;
@@ -149,6 +154,7 @@ private:
     //mRootNode = makeTreeRecursive(0, mNodes.size(), 0);
     Node* makeTreeRecursive(size_t begin, size_t end, size_t index)
     {
+        std::cout << "parameter : " << begin << ", " << end << ", " << index << std::endl;
         // for break recursive.
         if (end <= begin)
         {
