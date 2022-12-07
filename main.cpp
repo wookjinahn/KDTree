@@ -11,30 +11,21 @@
 #include "Point.hpp"
 #include "KDTree.hpp"
 
-void TestWikipedia()
+void TestWikipedia(bool debug)
 {
     typedef Point<int, 2> point2d;
     typedef KDTree<int, 2> tree2d;
 
-//    point2d points[] = {{ 2, 3 }, { 5, 4 }, { 9, 6 }, { 4, 7 }, { 8, 1 }, { 7, 2 }};
-//    point2d points[] = {{ 8, 7 }, { 10, 2 }, { 2, 6 }, { 5, 4 }, { 13, 3 }, { 3, 1 }};
     point2d points[] = {{ 3, 1 }, { 13, 3 }, { 2, 6 }, { 10, 2 }, { 8, 7 }};
 
-//    std::cout << sizeof(point2d) << std::endl;
-//    std::cout << "check : " << std::begin(points) << ", " << std::end(points) << ", " << (std::begin(points)+1) << std::endl;
-//    std::cout << "check : " << *std::begin(points) << ", " << *std::end(points) << ", " << *(std::begin(points)+1) << ", " << *(std::end(points)-1) << std::endl;
-    tree2d tree(std::begin(points), std::end(points));
-//    point2d n = tree.Nearest({ 9, 2 });
+    tree2d tree(std::begin(points), std::end(points), debug);
     point2d n = tree.Nearest({ 9, 4 });
 
-    std::cout << "Wikipedia example data:\n";
-    std::cout << "Nearest Point: " << n << '\n';
-    std::cout << "Distance: " << tree.GetDistance() << '\n';
-    std::cout << "nodes Visited: " << tree.Visited() << '\n';
+    std::cout << "Wikipedia example data : " << std::endl;
+    std::cout << "Nearest Point: " << n << std::endl;
+    std::cout << "Distance: " << tree.GetDistance() << std::endl;
+    std::cout << "nodes Visited: " << tree.Visited() << std::endl;
 }
-
-//typedef Point<double, 3> point3d;
-//typedef KDTree<double, 3> tree3d;
 
 struct random_point_generator
 {
@@ -55,38 +46,51 @@ struct random_point_generator
     std::uniform_real_distribution<double> distribution_;
 };
 
-void TestRandom(size_t count)
+void TestRandom(size_t count, bool debug)
 {
     random_point_generator rpg(0, 1);
-    KDTree<double, 3> tree(rpg, count);     // random points are inserted.
-    Point<double, 3> pt(rpg());             // new point generate.
-    Point<double, 3> n = tree.Nearest(pt);  // check nearestRecursive point about generated new point.
+    KDTree<double, 3> tree(rpg, count, debug);     // random points are inserted.
+    Point<double, 3> pt(rpg());                     // new point generate.
+    Point<double, 3> n = tree.Nearest(pt);          // check nearestRecursive point about generated new point.
 
-    std::cout << "Random data (" << count << " points):\n";
-    std::cout << "Point: " << pt << '\n';
-    std::cout << "Nearest Point: " << n << '\n';
-    std::cout << "Distance: " << tree.GetDistance() << '\n';
-    std::cout << "nodes Visited: " << tree.Visited() << '\n';
+    std::cout << "Random data (" << count << " points) : " << std::endl;
+    std::cout << "Point: " << pt << std::endl;
+    std::cout << "Nearest Point: " << n << std::endl;
+    std::cout << "Distance: " << tree.GetDistance() << std::endl;
+    std::cout << "nodes Visited: " << tree.Visited() << std::endl;
 }
 
 int main()
 {
+    bool debug = true;
+
     try
     {
-        const auto startTime = std::chrono::high_resolution_clock::now();
-        TestWikipedia();
-//        std::cout << '\n';
-//        TestRandom(1000);
-//        std::cout << '\n';
-
-
-//        TestRandom(1000000);
-
-        const auto stopTime = std::chrono::high_resolution_clock::now();
-        const auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime);
-
+        const auto TestWikipediastartTime = std::chrono::high_resolution_clock::now();
+        TestWikipedia(debug);
+        const auto TestWikipediastopTime = std::chrono::high_resolution_clock::now();
         std::cout << '\n';
-        std::cout << "process runtime : " << elapsedTime.count() / 1000.0f << " ms. | " << elapsedTime.count() << " us. | " << 1000000 / elapsedTime.count() << " Hz." << std::endl;
+
+        const auto TestRandomAstartTime = std::chrono::high_resolution_clock::now();
+        TestRandom(1000, debug);
+        const auto TestRandomAstopTime = std::chrono::high_resolution_clock::now();
+        std::cout << '\n';
+
+        const auto TestRandomBstartTime = std::chrono::high_resolution_clock::now();
+        TestRandom(1000000, debug);
+        const auto TestRandomBstopTime = std::chrono::high_resolution_clock::now();
+        std::cout << '\n';
+
+        if (debug)
+        {
+            const auto TestWikipediaelapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(TestWikipediastopTime - TestWikipediastartTime);
+            const auto TestRandomAelapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(TestRandomAstopTime - TestRandomAstartTime);
+            const auto TestRandomBelapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(TestRandomBstopTime - TestRandomBstartTime);
+            std::cout << "TestWikipedia process runtime : " << TestWikipediaelapsedTime.count() / 1000.0f << " ms. | " << TestWikipediaelapsedTime.count() << " us. | " << 1000000 / TestWikipediaelapsedTime.count() << " Hz." << std::endl;
+            std::cout << "TestRandomA process runtime : " << TestRandomAelapsedTime.count() / 1000.0f << " ms. | " << TestRandomAelapsedTime.count() << " us. | " << 1000000 / TestRandomAelapsedTime.count() << " Hz." << std::endl;
+            std::cout << "TestRandomB process runtime : " << TestRandomBelapsedTime.count() / 1000.0f << " ms. | " << TestRandomBelapsedTime.count() << " us. | " << 1000000 / TestRandomBelapsedTime.count() << " Hz." << std::endl;
+        }
+
     }
     catch (const std::exception& e)
     {

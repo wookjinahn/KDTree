@@ -29,15 +29,10 @@ public:
      * @param end end of range
      */
     template<typename iterator>
-    KDTree(iterator begin, iterator end)
+    KDTree(iterator begin, iterator end, bool debug)
         : mNodes(begin, end)
     {
-        std::cout << "start : 0, " << mNodes.size() << ", " << 0 << std::endl;
-        mRootNode = makeTreeRecursive(0, mNodes.size(), 0);
-
-        std::cout << "mRootNode : " << mRootNode->get(0) << ", " << mRootNode->get(1) << std::endl;
-        std::cout << "mRootNode Left : " << mRootNode->mLeft->get(0) << ", " << mRootNode->mLeft->get(1) << std::endl;
-        std::cout << "mRootNode Right : " << mRootNode->mRight->get(0) << ", " << mRootNode->mRight->get(1) << std::endl;
+        mRootNode = makeTreeRecursive(0, mNodes.size(), 0, debug);
     }
 
     /**
@@ -49,14 +44,14 @@ public:
      * @param n number of points to add
      */
     template<typename func>
-    KDTree(func&& f, size_t n)
+    KDTree(func&& f, size_t n, bool debug)
     {
         mNodes.reserve(n);
         for (size_t i = 0; i < n; ++i)
         {
             mNodes.push_back(f());          // generate(at Point<double, 3> random_point_generator::operator()()) and pushback
         }
-        mRootNode = makeTreeRecursive(0, mNodes.size(), 0);
+        mRootNode = makeTreeRecursive(0, mNodes.size(), 0, false);
     }
 
     /**
@@ -143,7 +138,7 @@ private:
 
         bool operator()(const Node& n1, const Node& n2) const
         {
-            return n1.mPoint.get(mIndex) < n2.mPoint.get(mIndex);   // 오름차순
+            return n1.mPoint.get(mIndex) < n2.mPoint.get(mIndex);
         }
 
         size_t mIndex;
@@ -152,22 +147,43 @@ private:
     //todo
     //at constructor
     //mRootNode = makeTreeRecursive(0, mNodes.size(), 0);
-    Node* makeTreeRecursive(size_t begin, size_t end, size_t index)
+    Node* makeTreeRecursive(size_t begin, size_t end, size_t index, bool debug)
     {
-        std::cout << "parameter : " << begin << ", " << end << ", " << index << std::endl;
+        if (debug)
+        {
+            std::cout << "parameter : " << begin << ", " << end << ", " << index << std::endl;
+        }
         // for break recursive.
         if (end <= begin)
         {
+            if (debug)
+            {
+                std::cout << "return nullptr" << std::endl;
+            }
             return nullptr;
         }
 
         size_t n = begin + (end - begin) / 2;   // -> ( begin <-> n ), ( n+1 <-> end) : middle value.
+        if (debug)
+        {
+            std::cout << "n : " << n << std::endl;
+        }
         auto i = mNodes.begin();                // first index of mNodes vector.
         std::nth_element(i + begin, i + n, i + end, node_cmp(index));   // index coordinate
+        if (debug)
+        {
+            std::cout << "nth_element param : 0 + " << begin << ", 0 + " << n << ", 0 + " << end << ", " << index << std::endl;
+            std::cout << "after : ";
+            for (int i = 0; i < mNodes.size(); i++)
+            {
+            std::cout << " ( " << mNodes[i].get(0) << ", " << mNodes[i].get(1) << " ) ";
+            }
+            std::cout << "\n";
+        }
         index = (index + 1) % dimensions;
 
-        mNodes[n].mLeft = makeTreeRecursive(begin, n, index);       // generate left, right tree at n node(middle point).
-        mNodes[n].mRight = makeTreeRecursive(n + 1, end, index);
+        mNodes[n].mLeft = makeTreeRecursive(begin, n, index, debug);       // generate left, right tree at n node(middle point).
+        mNodes[n].mRight = makeTreeRecursive(n + 1, end, index, debug);
 
         return &mNodes[n];
     }
