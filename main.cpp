@@ -49,9 +49,9 @@ struct random_point_generator
 void TestRandom(size_t count, bool debug)
 {
     random_point_generator rpg(0, 1);
-    KDTree<double, 3> tree(rpg, count, debug);     // random points are inserted.
-    Point<double, 3> pt(rpg());                     // new point generate.
-    Point<double, 3> n = tree.Nearest(pt);          // check nearestRecursive point about generated new point.
+    KDTree<double, 3> tree(rpg, count, debug);
+    Point<double, 3> pt(rpg());
+    Point<double, 3> n = tree.Nearest(pt);
 
     std::cout << "Random data (" << count << " points) : " << std::endl;
     std::cout << "Point: " << pt << std::endl;

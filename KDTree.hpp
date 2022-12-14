@@ -2,8 +2,8 @@
 // Created by canine on 22. 12. 3.
 //
 
-#ifndef KDTREE_ROSETTA_KDTREE_HPP
-#define KDTREE_ROSETTA_KDTREE_HPP
+#ifndef KDTREE_KDTREE_HPP
+#define KDTREE_KDTREE_HPP
 
 #include "Point.hpp"
 
@@ -18,9 +18,6 @@ public:
     typedef Point<coordinate_type, dimensions> point_type;
 
 public:
-//    KDTree(const KDTree&) = delete;
-//    KDTree& operator=(const KDTree&) = delete;
-
     /**
      * Constructor taking a pair of iterators. Adds each
      * Point in the range [begin, end) to the tree.
@@ -49,7 +46,7 @@ public:
         mNodes.reserve(n);
         for (size_t i = 0; i < n; ++i)
         {
-            mNodes.push_back(f());          // generate(at Point<double, 3> random_point_generator::operator()()) and pushback
+            mNodes.push_back(f());
         }
         mRootNode = makeTreeRecursive(0, mNodes.size(), 0, false);
     }
@@ -97,13 +94,12 @@ public:
         mBestNode = nullptr;
         mVisited = 0;
         mBestDist = 0;
-        nearestRecursive(mRootNode, pt, 0);  // start index = 0 : x
+        nearestRecursive(mRootNode, pt, 0);
 
         return mBestNode->mPoint;
     }
 
 private:
-    // std::vector<Node> mNodes;
     struct Node
     {
         Node(const point_type& pt)
@@ -128,7 +124,6 @@ private:
         Node* mRight;
     };
 
-    // for std::nth_element
     struct node_cmp
     {
         node_cmp(size_t index)
@@ -144,9 +139,6 @@ private:
         size_t mIndex;
     };
 
-    //todo
-    //at constructor
-    //mRootNode = makeTreeRecursive(0, mNodes.size(), 0);
     Node* makeTreeRecursive(size_t begin, size_t end, size_t index, bool debug)
     {
         if (debug)
@@ -188,9 +180,6 @@ private:
         return &mNodes[n];
     }
 
-    //todo
-    //const point_type& Nearest(const point_type& pt)
-    //{  nearestRecursive(mRootNode, pt, 0); }
     void nearestRecursive(Node* root, const point_type& point, size_t index)
     {
         if (root == nullptr)
@@ -235,4 +224,4 @@ private:
 };
 
 
-#endif //KDTREE_ROSETTA_KDTREE_HPP
+#endif //KDTREE_KDTREE_HPP

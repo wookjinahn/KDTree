@@ -2,8 +2,8 @@
 // Created by canine on 22. 12. 3.
 //
 
-#ifndef KDTREE_ROSETTA_POINT_HPP
-#define KDTREE_ROSETTA_POINT_HPP
+#ifndef KDTREE_POINT_HPP
+#define KDTREE_POINT_HPP
 
 #include <algorithm>
 #include <array>
@@ -60,7 +60,6 @@ private:
     std::array<coordinate_type, dimensions> mCoords;
 };
 
-// for cout debugging
 template<typename coordinate_type, size_t dimensions>
 std::ostream& operator<<(std::ostream& out, const Point<coordinate_type, dimensions>& pt)
 {
@@ -77,4 +76,4 @@ std::ostream& operator<<(std::ostream& out, const Point<coordinate_type, dimensi
     return out;
 }
 
-#endif //KDTREE_ROSETTA_POINT_HPP
+#endif //KDTREE_POINT_HPP
